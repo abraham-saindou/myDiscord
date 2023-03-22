@@ -17,7 +17,7 @@ def incoming_connection():
 def handle_client(client):
 
     name = client.recv(2048).decode("utf8")
-    welcome = "Welcome %s, type {quit} to exit." %name
+    welcome = "Welcome %s!" %name
     client.send(bytes(welcome, "utf8"))
     message = "%s has joined." %name
     broadcast(bytes(message, "utf8"))
