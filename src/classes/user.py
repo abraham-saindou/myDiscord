@@ -1,7 +1,5 @@
-import mysql.connector
-
 class User:
-    def __init__(self, name, fname, email, pwd):
+    def __init__(self, email, pwd, name="", fname=""):
         self.lastname = name
         self.firstname = fname
         self.email = email
@@ -28,7 +26,10 @@ class User:
         search = db.fetchall()
         if self.password == search:
             self.connected = True
+
+            return True
+        return False
         
 
-    def deconnection(self, db):
+    def deconnection(self):
         self.connected = False
