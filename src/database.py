@@ -1,6 +1,10 @@
 import mysql.connector
 
+db = mysql.connector.connect(
+        host = "localhost",
+        user = "root",
+        password = "",
+        database = "MyDiscord"
+)
 
-class SQL:
-    def __init__(self, nom, prenom, mail, mdp):
-        pass
+cursor = db.cursor(prepared=True)
