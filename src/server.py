@@ -1,5 +1,9 @@
 import socket
 import threading
+from classes.message import *
+from database import *
+import datetime
+
 
 HOST = '127.0.0.1'
 PORT = 33000
@@ -26,16 +30,42 @@ def handle_client(client):
     while True:
         message = client.recv(2048)
         if message != bytes("{quit}", "utf8"):
-            broadcast(message, name+": ")
+
+            date = datetime.datetime.now()
+            author_id = get_user_id(name.split(" ")[0], name.split(" ")[1])
+
+            #Messages Privés
+            if message[:2] == bytes("/p", "utf8"):
+
+                dest =  message[2:].decode("utf-8").split(":")[0]
+                content = message[2:].decode("utf-8").split(":")[1]
+
+                get_client(dest).send(bytes(f"{name}:{content}", "utf8"))
+
+                dest_id = get_user_id(dest.split(" ")[0], dest.split(" ")[1])
+                Message(author_id, date, content, 1, dest_id).ajouter()
+
+            #Messages Publics
+            else:
+                broadcast(message, name+": ",date, author_id)
         else:
             client.close()
             del clients[client]
             broadcast(bytes("%s has left." %name, "utf8"))
             break
 
-def broadcast(message, sender=""):
+def broadcast(message, sender="", date = "", id = "" ):
+
+    if id != "":
+        Message(id, date, message, 0).ajouter()
+
     for user in clients:
         user.send(bytes(sender, "utf8")+message)
+
+def get_client(name):
+    for client in clients:
+        if clients[client] == name:
+            return client
         
 
 def main():

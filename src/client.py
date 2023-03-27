@@ -1,19 +1,16 @@
-import socket
-import threading
 from tkinter import *
 from database import *
 from classes.gui import *
-import mysql.connector
-
-def receive():
-    while True:
-        if app.status == 2:
-            message = app.client.recv(2048).decode('utf-8')
-            print(message)
-            Label(app.chat_frame, text=message).pack()
 
 app = Interface()
-receive_thread = threading.Thread(target=receive)
-receive_thread.start()
 app.run()
+
+#clos la connexion si le client est toujours connecté a la fermeture du programme
+try:
+    message = "{quit}"
+    app.client.sendall(message.encode())
+    app.client.close()
+except:
+    pass
+
 cursor.close()

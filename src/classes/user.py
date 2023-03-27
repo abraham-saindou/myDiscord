@@ -19,22 +19,24 @@ class User:
             db.commit()
             print("added succesfully")
             return True
-        print("erreur")
+        
         return False
     
     #Connecte l'utilisateur si le mot de passe entré correspond a celui dans la bdd
     def connection(self):
 
-        cursor.execute("SELECT motdepasse FROM Utilisateurs WHERE email = ?", [self.email])
+        cursor.execute("SELECT * FROM Utilisateurs WHERE email = ?", [self.email])
         search = cursor.fetchall()
 
-        if self.password == search[0][0]:
-            self.connected = True
-            print("Logged in")
+        if not search:
+            return False
+        
+        if self.password == search[0][4]:
+
+            self.id = search[0][0]
+            self.lastname = search[0][1]
+            self.firstname = search[0][2]
+
             return True
-        print("erreur")
         return False
         
-
-    def deconnection(self):
-        self.connected = False
