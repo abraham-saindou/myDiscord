@@ -1,7 +1,7 @@
-from database import *
 from tkinter import *
+from database import *
 
-class Message:
+class Messages:
     def __init__(self, author, date, content, channel, destination = ""):
         self.author = author
         self.destination = destination
@@ -20,5 +20,5 @@ class Message:
         db.commit()
 
     def display(self, surface):
-        surface.insert(END, self.content)
-        pass
+
+        Label(surface, text=self.content, anchor="nw").pack(fill=X)

@@ -17,7 +17,7 @@ class User:
             cursor.execute("INSERT INTO Utilisateurs (nom, prenom, email, motdepasse) VALUES\
                        (?,?,?,?)", [self.lastname, self.firstname, self.email, self.password])
             db.commit()
-            print("added succesfully")
+
             return True
         
         return False

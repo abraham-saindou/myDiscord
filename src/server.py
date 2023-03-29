@@ -39,15 +39,14 @@ def handle_client(client):
 
                 dest =  message[2:].decode("utf-8").split(":")[0]
                 content = message[2:].decode("utf-8").split(":")[1]
-
-                get_client(dest).send(bytes(f"{name}:{content}", "utf8"))
+                get_client(dest).send(bytes(f"({date}) {name}: {content}", "utf8"))
 
                 dest_id = get_user_id(dest.split(" ")[0], dest.split(" ")[1])
-                Message(author_id, date, content, 1, dest_id).ajouter()
+                Messages(author_id, date, content, 1, dest_id).ajouter()
 
             #Messages Publics
             else:
-                broadcast(message, name+": ",date, author_id)
+                broadcast(message, name, date, author_id)
         else:
             client.close()
             del clients[client]
@@ -57,10 +56,13 @@ def handle_client(client):
 def broadcast(message, sender="", date = "", id = "" ):
 
     if id != "":
-        Message(id, date, message, 0).ajouter()
+        Messages(id, date, message, 0).ajouter()
 
     for user in clients:
-        user.send(bytes(sender, "utf8")+message)
+        if sender != "":
+            user.send(bytes(f"({date}) {sender}: ", "utf8")+message)
+        else:
+            user.send(message)
 
 def get_client(name):
     for client in clients:
