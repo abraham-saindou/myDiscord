@@ -53,6 +53,7 @@ class Interface:
             self.root.title(f"Discord - {self.user.firstname} {self.user.lastname}")
             self.navigation(2)
             self.client.sendall(f"{self.user.lastname} {self.user.firstname}".encode())
+            
         else:
             showerror('Connection', 'Incorrect email or password')
 

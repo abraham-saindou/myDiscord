@@ -9,7 +9,7 @@ class Messages:
         self.channel = channel
         self.date = date
 
-    def ajouter(self):
+    def add(self):
 
         if self.channel == 1:
             cursor.execute("INSERT INTO Messages (id_auteur, date_pub, texte, id_canal, id_destinataire)\

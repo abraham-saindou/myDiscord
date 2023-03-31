@@ -42,7 +42,7 @@ def handle_client(client):
                 get_client(dest).send(bytes(f"({date}) {name}: {content}", "utf8"))
 
                 dest_id = get_user_id(dest.split(" ")[0], dest.split(" ")[1])
-                Messages(author_id, date, content, 1, dest_id).ajouter()
+                Messages(author_id, date, content, 1, dest_id).add()
 
             #Messages Publics
             else:
@@ -56,7 +56,7 @@ def handle_client(client):
 def broadcast(message, sender="", date = "", id = "" ):
 
     if id != "":
-        Messages(id, date, message, 0).ajouter()
+        Messages(id, date, message, 0).add()
 
     for user in clients:
         if sender != "":

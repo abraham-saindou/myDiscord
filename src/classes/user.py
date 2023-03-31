@@ -1,11 +1,12 @@
 from database import *
+import hashlib
 
 class User:
     def __init__(self, email, pwd, name="", fname=""):
         self.lastname = name
         self.firstname = fname
         self.email = email
-        self.password = pwd
+        self.password = hashlib.sha256(pwd.encode()).hexdigest()
 
     #Ajoute un utilisateur dans la bdd si il n'est pas deja present
     def register(self):

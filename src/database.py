@@ -4,7 +4,7 @@ from classes.message import *
 db = mysql.connector.connect(
         host = "localhost",
         user = "root",
-        password = "SuperP3scado",
+        password = "",
         database = "MyDiscord"
 )
 
