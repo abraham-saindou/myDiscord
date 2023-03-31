@@ -36,8 +36,8 @@ def get_users():
     return users
 
 #Recupere les messages publics
-def get_public_messages():
-    cursor.execute("SELECT * FROM Messages WHERE id_canal = 0")
+def get_channel_messages(channel):
+    cursor.execute("SELECT * FROM Messages WHERE id_canal = ?", [channel])
     result = cursor.fetchall()
 
     messages = []

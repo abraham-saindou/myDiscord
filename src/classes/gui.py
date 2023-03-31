@@ -122,12 +122,13 @@ class Interface:
         Button(self.entry_frame, text="Log out", command=self.disconnect, width=20).pack(side=LEFT, expand=True)
 
         match self.channel:
-            case 0:
-                messages = get_public_messages()
             case 1:
                 dest_id = get_user_id(self.destination.split(" ")[0], self.destination.split(" ")[1])
 
                 messages = get_private_messages(self.user.id, dest_id)
+                
+            case _:
+                messages = get_channel_messages(self.channel)
 
         if messages:    
             for message in messages:
