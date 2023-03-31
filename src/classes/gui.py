@@ -1,7 +1,7 @@
 import socket
 import threading
 from tkinter import *
-from classes.user import *
+from src.classes.user import *
 from tkinter.messagebox import *
 
 HOST ='127.0.0.1'
