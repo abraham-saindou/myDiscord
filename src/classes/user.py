@@ -1,35 +1,43 @@
+from database import *
+import hashlib
+
 class User:
     def __init__(self, email, pwd, name="", fname=""):
         self.lastname = name
         self.firstname = fname
         self.email = email
-        self.password = pwd
-        self.connected = False
+        self.password = hashlib.sha256(pwd.encode()).hexdigest()
 
-    def register(self, db):
-        db.execute("SELECT * FROM Utilisateurs WHERE email = ?", [self.email])
+    #Ajoute un utilisateur dans la bdd si il n'est pas deja present
+    def register(self):
+        cursor.execute("SELECT * FROM Utilisateurs WHERE email = ?", [self.email])
         
-        search = db.fetchall()
+        search = cursor.fetchall()
 
         if not search:
-            db.execute("INSERT INTO Utilisateurs (nom, prenom, email, motdepasse) VALUES\
+            cursor.execute("INSERT INTO Utilisateurs (nom, prenom, email, motdepasse) VALUES\
                        (?,?,?,?)", [self.lastname, self.firstname, self.email, self.password])
+            db.commit()
+
+            return True
         
-        else:
-            print("Cette addresse est deja utilisée")
-
-        pass
+        return False
     
-    def connection(self, db):
+    #Connecte l'utilisateur si le mot de passe entré correspond a celui dans la bdd
+    def connection(self):
 
-        db.execute("SELECT motdepasse FROM Utilisateurs WHERE email = ?", [self.email])
-        search = db.fetchall()
-        if self.password == search:
-            self.connected = True
+        cursor.execute("SELECT * FROM Utilisateurs WHERE email = ?", [self.email])
+        search = cursor.fetchall()
+
+        if not search:
+            return False
+        
+        if self.password == search[0][4]:
+
+            self.id = search[0][0]
+            self.lastname = search[0][1]
+            self.firstname = search[0][2]
 
             return True
         return False
         
-
-    def deconnection(self):
-        self.connected = False
