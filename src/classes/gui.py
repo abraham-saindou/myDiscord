@@ -9,11 +9,12 @@ PORT = 33000
 
 class Interface:
     def __init__(self):
+
         self.root = Tk()
         self.root.title("Discord")
         self.root.geometry("400x500")
-        self.destination = "test test"
-        self.channel = 0
+        self.destination = ""
+        self.channel = 1
         self.status = 0
 
     #Formulaire de connection
@@ -98,19 +99,23 @@ class Interface:
 
 
     def chatroom(self):
-
+        
         self.chat_frame = Frame(self.root)
         self.entry_frame = Frame(self.root)
         self.settings_frame = Frame(self.root)
         self.input_message = Entry(self.entry_frame)
         Scrollbar(self.chat_frame).pack(side=RIGHT, fill=Y)
-        Button(self.settings_frame, command= self.change_channel, text="Change channel", width=35).pack(side=LEFT, expand=True)
+        self.channel_filter = StringVar()
+        self.channel_filter.set(channels_dict[self.channel])
+        OptionMenu(self.settings_frame, self.channel_filter, *[channel[1] for channel in channels], command=self.change_channel).pack(side=LEFT, expand=True)
 
-        if self.channel == 1:
+        if self.channel == 2:
             users = get_users()
-            self.filter = StringVar()
-            self.filter.set(self.destination)
-            OptionMenu(self.settings_frame, self.filter, *users, command= self.change_user).pack(side=RIGHT, expand=True)
+            if self.destination == "":
+                self.destination = users[0]
+            self.user_filter = StringVar()
+            self.user_filter.set(self.destination)
+            OptionMenu(self.settings_frame, self.user_filter, *users, command= self.change_user).pack(side=RIGHT, expand=True)
         
         self.settings_frame.pack()
         self.chat_frame.pack_propagate(0)
@@ -122,7 +127,7 @@ class Interface:
         Button(self.entry_frame, text="Log out", command=self.disconnect, width=20).pack(side=LEFT, expand=True)
 
         match self.channel:
-            case 1:
+            case 2:
                 dest_id = get_user_id(self.destination.split(" ")[0], self.destination.split(" ")[1])
 
                 messages = get_private_messages(self.user.id, dest_id)
@@ -134,15 +139,22 @@ class Interface:
             for message in messages:
                 message.display(self.chat_frame)
 
+    #Reception et affichage des messages
     def receive(self):
 
         while True:
             message = self.client.recv(2048).decode('utf-8')
             if message[:2] == "/p":
-                if self.channel == 1:
+                if self.channel == 2:
                     Label(self.chat_frame, text=message[2:], anchor="nw").pack(fill=X)
             else:
-                Label(self.chat_frame, text=message, anchor="nw").pack(fill=X)
+                try:
+                    channel = int(message.split(":")[0])
+
+                    if self.channel == channel:
+                        Label(self.chat_frame, text=message.split(":")[1:], anchor="nw").pack(fill=X)
+                except:
+                    Label(self.chat_frame, text=message, anchor="nw").pack(fill=X)
 
     #Envoi de message au serveur
     def send(self):
@@ -153,22 +165,20 @@ class Interface:
             self.disconnect()
 
         elif message != '':
-            if self.channel != 1:
-                self.client.sendall(message.encode())
+            if self.channel != 2:
+                self.client.sendall(f"{self.channel}:{message}".encode())
             else:
                 self.client.sendall((f"/p{self.destination}:{message}").encode())
 
-    def change_channel(self):
-        if self.channel == 0:
-            self.channel = 1
-        else:
-            self.channel = 0
+    def change_channel(self, channel):
+
+        self.channel = channels_id_dict[self.channel_filter.get()]
 
         self.navigation(2)
     
     def change_user(self, user):
 
-        self.destination = self.filter.get()
+        self.destination = self.user_filter.get()
         self.navigation(2)
                 
     def disconnect(self):

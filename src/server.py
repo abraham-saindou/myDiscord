@@ -42,25 +42,29 @@ def handle_client(client):
                 get_client(dest).send(bytes(f"({date}) {name}: {content}", "utf8"))
 
                 dest_id = get_user_id(dest.split(" ")[0], dest.split(" ")[1])
-                Messages(author_id, date, content, 1, dest_id).add()
+                Messages(author_id, date, content, 2, dest_id).add()
 
             #Messages Publics
             else:
-                broadcast(message, name, date, author_id)
+
+                channel = message.decode("utf-8").split(":")[0]
+                content = message.decode("utf-8").split(":")[1]
+
+                broadcast(content, int(channel), name, date, author_id)
         else:
             client.close()
             del clients[client]
             broadcast(bytes("%s has left." %name, "utf8"))
             break
 
-def broadcast(message, sender="", date = "", id = "" ):
+def broadcast(message, channel = 0, sender="", date = "", id = "" ):
 
     if id != "":
-        Messages(id, date, message, 0).add()
+        Messages(id, date, message, channel).add()
 
     for user in clients:
         if sender != "":
-            user.send(bytes(f"({date}) {sender}: ", "utf8")+message)
+            user.send(bytes(f"{channel}({date}) {sender}: {message}", "utf8"))
         else:
             user.send(message)
 

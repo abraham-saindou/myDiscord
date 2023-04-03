@@ -12,10 +12,10 @@ class Messages:
     def add(self):
 
         if self.channel == 1:
-            cursor.execute("INSERT INTO Messages (id_auteur, date_pub, texte, id_canal, id_destinataire)\
+            cursor.execute("INSERT INTO messages (id_auteur, date_pub, texte, id_canal, id_destinataire)\
                         VALUES (?,?,?,?,?)", [self.author, self.date, self.content, self.channel, self.destination])
         else:
-            cursor.execute("INSERT INTO Messages (id_auteur, date_pub, texte, id_canal)\
+            cursor.execute("INSERT INTO messages (id_auteur, date_pub, texte, id_canal)\
                         VALUES (?,?,?,?)", [self.author, self.date, self.content, self.channel])
         db.commit()
 
