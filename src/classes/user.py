@@ -10,12 +10,12 @@ class User:
 
     #Ajoute un utilisateur dans la bdd si il n'est pas deja present
     def register(self):
-        cursor.execute("SELECT * FROM Utilisateurs WHERE email = ?", [self.email])
+        cursor.execute("SELECT * FROM utilisateurs WHERE email = ?", [self.email])
         
         search = cursor.fetchall()
 
         if not search:
-            cursor.execute("INSERT INTO Utilisateurs (nom, prenom, email, motdepasse) VALUES\
+            cursor.execute("INSERT INTO utilisateurs (nom, prenom, email, motdepasse) VALUES\
                        (?,?,?,?)", [self.lastname, self.firstname, self.email, self.password])
             db.commit()
 
@@ -26,7 +26,7 @@ class User:
     #Connecte l'utilisateur si le mot de passe entré correspond a celui dans la bdd
     def connection(self):
 
-        cursor.execute("SELECT * FROM Utilisateurs WHERE email = ?", [self.email])
+        cursor.execute("SELECT * FROM utilisateurs WHERE email = ?", [self.email])
         search = cursor.fetchall()
 
         if not search:
