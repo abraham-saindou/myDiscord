@@ -1,4 +1,3 @@
-from tkinter import *
 from src.database import *
 
 class Messages:
